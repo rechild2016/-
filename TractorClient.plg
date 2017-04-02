@@ -1,0 +1,51 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: TractorClient - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x804 /fo"Debug/TractorClient.res" /d "_DEBUG" "E:\文档库\车辆工程\挑战杯\SICK -Qiu\TractorClient.rc"" 
+Creating temporary file "C:\Users\cosmos\AppData\Local\Temp\RSP15B1.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Debug/" /Fp"Debug/TractorClient.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"E:\文档库\车辆工程\挑战杯\SICK -Qiu\TractorClient.cpp"
+"E:\文档库\车辆工程\挑战杯\SICK -Qiu\TractorClientDlg.cpp"
+]
+Creating command line "cl.exe @C:\Users\cosmos\AppData\Local\Temp\RSP15B1.tmp" 
+Creating temporary file "C:\Users\cosmos\AppData\Local\Temp\RSP15B2.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Debug/" /Fp"Debug/TractorClient.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"E:\文档库\车辆工程\挑战杯\SICK -Qiu\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\Users\cosmos\AppData\Local\Temp\RSP15B2.tmp" 
+Creating temporary file "C:\Users\cosmos\AppData\Local\Temp\RSP15C2.tmp" with contents
+[
+ws2_32.lib /nologo /subsystem:windows /incremental:yes /pdb:"Debug/TractorClient.pdb" /debug /machine:I386 /out:"Debug/TractorClient.exe" /pdbtype:sept 
+".\Debug\StdAfx.obj"
+".\Debug\TractorClient.obj"
+".\Debug\TractorClientDlg.obj"
+".\Debug\TractorClient.res"
+]
+Creating command line "link.exe @C:\Users\cosmos\AppData\Local\Temp\RSP15C2.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+TractorClient.cpp
+TractorClientDlg.cpp
+Generating Code...
+Linking...
+Creating command line "bscmake.exe /nologo /o"Debug/TractorClient.bsc"  ".\Debug\StdAfx.sbr" ".\Debug\TractorClient.sbr" ".\Debug\TractorClientDlg.sbr""
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+TractorClient.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

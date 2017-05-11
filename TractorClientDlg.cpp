@@ -3,8 +3,12 @@
 #include "TractorClientDlg.h"
 #include "time.h"
 #include "math.h"
+#include "string.h"
 #include "shlwapi.h"//为了使用StrToIntEx(),需要此头文件和lib
 #include <sstream>
+#include <queue> 
+#define D 2200
+queue<char*>strbuff;
 #pragma comment(lib,"shlwapi.lib")
 
 #ifdef _DEBUG
@@ -319,27 +323,23 @@ int CTractorClientDlg::CalVolume(int *distance,float *CrossArea)
 {
 	int i;
 	float sita;
-	int D = 2200;//mm
+	//int D = 2200;//mm
 	int d[CollectNum],h[CollectNum];	
 	int S[CollectNum] = { 0 };
 	d[0] = distance[1];
 	h[0] = 0;
 	for (i = 1; i < CollectNum; i++)
 	{
-		if (distance[i+1] < (D + 500))
-		{
+		if (distance[i] > 3500)
+			distance[i] = (D + 500);
+		
 			sita = (float)(i*pi/ 360);
 			d[i] = distance[i] * cosf(sita);
 			h[i] = distance[i]*sinf(sita);	// 单位mm
-			CrossArea[i-1] = 0.5*(2 * D - d[i] - d[i - 1])*(fabsf(h[i] - h[i - 1]));//单位 mm^2
-		}
-		else
-		{
-			CrossArea[i - 1] = 0;
-			d[i] = distance[i] * cosf(sita);
-			h[i] = distance[i] * sinf(sita);	// 单位mm
+			if(distance[i]<D+500)
+				CrossArea[i-1] = 0.5*(2 * D - d[i] - d[i - 1])*(fabsf(h[i] - h[i - 1]));//单位 mm^2
+			else CrossArea[i - 1] = 0;
 
-		}
 		if (CrossArea[i - 1] < 0)CrossArea[i-1] = 0;
 	}
 
@@ -394,22 +394,28 @@ void CTractorClientDlg::StartMeasuring(int vlume[])
 	{
 		ss >> s;
 		data[i] = convert<int>(s);	//第0个为数据个数
+		if (data[i] > D ||data[i]<100)data[i] = D;
 	}
 	CalVolume(data, CrossArea);		//计算每个微段截面积
 
 	for (int i = 0; i < 120 ; i++)		//取120个数据  即0-60°
 	{
-		Ssum[i / 24] += 0.5*CrossArea[i];	//每部分截面积之和
+		Ssum[i / 24] += 0.5*CrossArea[i];	//每部分截面积之和 mm^2
 		if (Ssum[i / 24] < 0)Ssum[i/24] = 0;
 	}
 
 	for (int i = 0; i < 10; i++)
 	{
-		vol[i] = (float)(0.001*Ssum[i]);//将截面积等效成体积 单位ml
-		if (vol[i] > 900 || vol[i]<0)vol[i] = 0;
-		tmpdata2.Format("%d ", vol[i]);
+		vol[i] = (float)(0.00232*Ssum[i]);//将截面积等效成体积 单位cm^3
+		//*0.155->cm^3/s -> /10^6  m^3/s =
+		//0.025L/s 每个喷头出水量/1.55*10^-7 *Percent   =     需要0.12L/m^3
+		//Percent=0.12/0.025*1.55*10^-7=7.44*10^-7*300=2.232*10^-4
+		if ( vol[i]<100)vol[i] = 0;
+		else if (vol[i] > 900)vol[i] = 900;
+		
+		vlume[i] = vol[i]*0.1;
+		tmpdata2.Format("%d ", vlume[i]);
 		strData = strData + tmpdata2;
-		vlume[i] = vol[i]*0.4;
 	}
 
 	
@@ -436,6 +442,9 @@ void CTractorClientDlg::OnBtnMeasure1()
 	IsFrmOne = false;
 	int vlume[10] = { 0 };
 	StartMeasuring(vlume);
+	char src[40] = "";
+	Trans((int *)vlume, src);
+	WriteCOM(src, dwBytesWrite);
 //	char massage[] = "00000000000000000000000000000000000";
 //	DWORD dwBytesWrite = strlen(massage);
 	//WriteCOM(massage, dwBytesWrite);
@@ -460,7 +469,8 @@ void CTractorClientDlg::OnBtnMeasure2()
 		&TCPThreadID);		
 	ASSERT(hTCPTransThread!=NULL); 
 	CloseHandle(hTCPTransThread);
-
+	for(int i=0;i<60;i++)
+		strbuff.push("00000000000000000000000000000000");
 }
 
 //停止测量
@@ -503,7 +513,7 @@ void CTractorClientDlg::OnBtnStopMeasure()
 }
 
 //连续测量
-
+char src2[4][40];
 void CTractorClientDlg::TCPThread(void *param)
 {
 	CTractorClientDlg *dlg=(CTractorClientDlg*)param;
@@ -517,8 +527,12 @@ void CTractorClientDlg::TCPThread(void *param)
 		twice++;
 		IsFrmOne = true;
 		StartMeasuring(vol);
-		for(int i=0;i<10;i++)
+		for (int i = 0; i < 10; i++)
+		{
+			if (vol[i] > 0)vol[i] += 50;
 			volSum[i] += vol[i];
+		}
+			
 		Sleep(10);
 		if (twice >= 10)//10次平均滤波
 		{//大约160ms发送一次数据
@@ -527,7 +541,13 @@ void CTractorClientDlg::TCPThread(void *param)
 			//转换成字符串准备发送
 			char src[40] = "";
 			Trans((int *)volSum, src);
-			WriteCOM(src, dwBytesWrite);
+			for (int j = 3; j >0; j--)
+			{
+				strcpy(src2[j], src2[j-1]);
+			}
+			strcpy(src2[0] ,src);
+			
+ 			WriteCOM(src2[3], dwBytesWrite);
 			twice = 0;
 		}
 

@@ -7,8 +7,7 @@
 #include "shlwapi.h"//为了使用StrToIntEx(),需要此头文件和lib
 #include <sstream>
 #include <queue> 
-#define D 2200
-queue<char*>strbuff;
+
 #pragma comment(lib,"shlwapi.lib")
 
 #ifdef _DEBUG
@@ -22,11 +21,12 @@ static char THIS_FILE[] = __FILE__;
 
 #define pi 3.14159
 #define CollectNum 181	//传感器采集的数量	 对应90°范围
+#define D 2200
 
 template<typename out_type, typename in_value>
 out_type convert(const in_value & t) {
 	stringstream stream;
-	stream << std::hex<<t;//向流中传值
+	stream << std::hex << t;//向流中传值
 	out_type result;//这里存储转换结果
 	stream >> result;//向result中写入值
 	return result;
@@ -144,8 +144,6 @@ BOOL CTractorClientDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 	
 	// TODO: Add extra initialization here
-
-
 	((CButton*)GetDlgItem(IDC_BTN_GETINFO))->EnableWindow(FALSE);
 	((CButton*)GetDlgItem(IDC_BTN_SYSSET))->EnableWindow(FALSE);
 	((CButton*)GetDlgItem(IDC_BTN_MEASURE1))->EnableWindow(FALSE);
@@ -218,14 +216,12 @@ BOOL cnctstat=FALSE;
 //连接设备
 void CTractorClientDlg::OnBtnConnect() 
 {
-
 	wVersionRequested2 = MAKEWORD( 1, 1 );
 	err2 = WSAStartup( wVersionRequested2, &wsaData2 );
 	if ( err2 != 0 )
 	{
 		return ;
 	}
-	
 	
 	if ( LOBYTE( wsaData2.wVersion ) != 1 || HIBYTE( wsaData2.wVersion ) != 1 ) 
 	{
@@ -299,7 +295,6 @@ void CTractorClientDlg::OnBtnGetInfo()
 		ReadCOM(massage);
 	}
 	
-	
 }
 
 
@@ -312,8 +307,6 @@ void CTractorClientDlg::OnBtnSysSet()
 	Sleep(1000);
 	Saveup();
 	Sleep(1000);
-
-
 	Logout();
 
 }
@@ -393,8 +386,8 @@ void CTractorClientDlg::StartMeasuring(int vlume[])
 	for(i=0;i<CollectNum;i++)
 	{
 		ss >> s;
-		data[i] = convert<int>(s);	//第0个为数据个数
-		if (data[i] > D ||data[i]<100)data[i] = D;
+		data[i] = convert<int>(s);
+		if (data[i] > D || data[i]<100 ) data[i] = D;
 	}
 	CalVolume(data, CrossArea);		//计算每个微段截面积
 
@@ -445,11 +438,7 @@ void CTractorClientDlg::OnBtnMeasure1()
 	char src[40] = "";
 	Trans((int *)vlume, src);
 	WriteCOM(src, dwBytesWrite);
-//	char massage[] = "00000000000000000000000000000000000";
-//	DWORD dwBytesWrite = strlen(massage);
-	//WriteCOM(massage, dwBytesWrite);
 	Sleep(20);
-////////////////////////////////////////////////////////
 	
 }
 
@@ -469,8 +458,7 @@ void CTractorClientDlg::OnBtnMeasure2()
 		&TCPThreadID);		
 	ASSERT(hTCPTransThread!=NULL); 
 	CloseHandle(hTCPTransThread);
-	for(int i=0;i<60;i++)
-		strbuff.push("00000000000000000000000000000000");
+	
 }
 
 //停止测量
@@ -537,7 +525,7 @@ void CTractorClientDlg::TCPThread(void *param)
 		if (twice >= 10)//10次平均滤波
 		{//大约160ms发送一次数据
 			for (int i = 0; i<10; i++)
-				volSum[i] *=0.1;
+				volSum[i] *= 0.1;
 			//转换成字符串准备发送
 			char src[40] = "";
 			Trans((int *)volSum, src);
@@ -683,18 +671,18 @@ void CTractorClientDlg::SetInfo()
 	AfxGetMainWnd()->GetDlgItem(IDC_STARTANG)->SetWindowText("起始角：0°");
 	AfxGetMainWnd()->GetDlgItem(IDC_STOPANG)->SetWindowText("终止角：90°");
 
-
 }
 
 
 void CTractorClientDlg::Login()
 {
-		char CmdLogin[31]={(char)0x02,(char)0x73,(char)0x4D,(char)0x4E,\
-			(char)0x20,(char)0x53,(char)0x65,(char)0x74,(char)0x41,(char)0x63,\
-			(char)0x63,(char)0x65,(char)0x73,(char)0x73,(char)0x4D,(char)0x6F,\
-			(char)0x64,(char)0x65,(char)0x20,(char)0x30,(char)0x33,(char)0x20,\
-			(char)0x46,(char)0x34,(char)0x37,(char)0x32,(char)0x34,(char)0x37,\
-			(char)0x34,(char)0x34,(char)0x03};//login system with Authorised client 
+	char CmdLogin[31]={(char)0x02,(char)0x73,(char)0x4D,(char)0x4E,\
+		(char)0x20,(char)0x53,(char)0x65,(char)0x74,(char)0x41,(char)0x63,\
+		(char)0x63,(char)0x65,(char)0x73,(char)0x73,(char)0x4D,(char)0x6F,\
+		(char)0x64,(char)0x65,(char)0x20,(char)0x30,(char)0x33,(char)0x20,\
+		(char)0x46,(char)0x34,(char)0x37,(char)0x32,(char)0x34,(char)0x37,\
+		(char)0x34,(char)0x34,(char)0x03};//login system with Authorised client 
+
 	send(sockClient2,CmdLogin,31,0);
 	char recvBuf[100]={'\0'};
 	int Msglen;
@@ -717,7 +705,7 @@ void CTractorClientDlg::Logout()
 	char recvBuf[100]={'\0'};
 	int Msglen=0;
 	
-		Msglen=recv(sockClient2,recvBuf,100,0);
+	Msglen=recv(sockClient2,recvBuf,100,0);
 
 	CString strMsg;
 	strMsg.Format("%s",recvBuf);
@@ -739,8 +727,6 @@ void CTractorClientDlg::Saveup()
 	send(sockClient2,CmdSave,17,0);
 	char recvBuf[100]={'\0'};
 	int Msglen;
-
-
 
 	BOOL IsBack=FALSE;
 	while (IsBack==FALSE)

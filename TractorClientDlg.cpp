@@ -4,9 +4,8 @@
 #include "time.h"
 #include "math.h"
 #include "string.h"
-#include "shlwapi.h"//ÎªÁËÊ¹ÓÃStrToIntEx(),ĞèÒª´ËÍ·ÎÄ¼şºÍlib
+#include "shlwapi.h"//ä¸ºäº†ä½¿ç”¨StrToIntEx(),éœ€è¦æ­¤å¤´æ–‡ä»¶å’Œlib
 #include <sstream>
-#include <queue> 
 
 #pragma comment(lib,"shlwapi.lib")
 
@@ -16,26 +15,26 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-#define SERVERIP "192.168.0.1" //¶¨Òåºê£¬·şÎñÆ÷IP
+#define SERVERIP "192.168.0.1" //å®šä¹‰å®ï¼ŒæœåŠ¡å™¨IP
 #define SERVERPORT 2111
 
 #define pi 3.14159
-#define CollectNum 181	//´«¸ĞÆ÷²É¼¯µÄÊıÁ¿	 ¶ÔÓ¦90¡ã·¶Î§
+#define CollectNum 181	//ä¼ æ„Ÿå™¨é‡‡é›†çš„æ•°é‡	 å¯¹åº”90Â°èŒƒå›´
 #define D 2200
 
 template<typename out_type, typename in_value>
 out_type convert(const in_value & t) {
 	stringstream stream;
-	stream << std::hex << t;//ÏòÁ÷ÖĞ´«Öµ
-	out_type result;//ÕâÀï´æ´¢×ª»»½á¹û
-	stream >> result;//ÏòresultÖĞĞ´ÈëÖµ
+	stream << std::hex << t;//å‘æµä¸­ä¼ å€¼
+	out_type result;//è¿™é‡Œå­˜å‚¨è½¬æ¢ç»“æœ
+	stream >> result;//å‘resultä¸­å†™å…¥å€¼
 	return result;
 }
 
-bool IsMeasure2=false;//ÊÇ·ñÁ¬Ğø²âÁ¿±êÊ¶
+bool IsMeasure2=false;//æ˜¯å¦è¿ç»­æµ‹é‡æ ‡è¯†
 clock_t start, finish;
 
-HANDLE hCom;  //È«¾Ö±äÁ¿£¬´®¿Ú¾ä±ú
+HANDLE hCom;  //å…¨å±€å˜é‡ï¼Œä¸²å£å¥æŸ„
 
 
 class CAboutDlg : public CDialog
@@ -150,7 +149,7 @@ BOOL CTractorClientDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_BTN_MEASURE2))->EnableWindow(FALSE);
 	((CButton*)GetDlgItem(IDC_BTN_STOP))->EnableWindow(FALSE);
 
-	cfont.CreatePointFont(250,"ºÚÌå");
+	cfont.CreatePointFont(250,"é»‘ä½“");
 	CStatic *static1;
 	static1=(CStatic*)this->GetDlgItem(IDC_TITLE);
 	static1->SetFont(&cfont,true);
@@ -213,7 +212,7 @@ HANDLE hTCPTransThread;
 BOOL cnctstat=FALSE;
 
 
-//Á¬½ÓÉè±¸
+//è¿æ¥è®¾å¤‡
 void CTractorClientDlg::OnBtnConnect() 
 {
 	wVersionRequested2 = MAKEWORD( 1, 1 );
@@ -240,8 +239,8 @@ void CTractorClientDlg::OnBtnConnect()
 	err_cnect=connect(sockClient2,(SOCKADDR*)&addrSrv2,sizeof(SOCKADDR));
 	if (err_cnect!=0)
 	{
-		AfxGetMainWnd()->MessageBox("Á¬½ÓÉè±¸Ê§°Ü£¡","¹Ú²ãÌå»ı²âÁ¿ÏµÍ³",MB_OK | MB_ICONERROR );
-		GetDlgItem(IDC_WORKSTATUS)->SetWindowText("¹¤×÷×´Ì¬£ºÎ´Á¬½Ó");
+		AfxGetMainWnd()->MessageBox("è¿æ¥è®¾å¤‡å¤±è´¥ï¼","å† å±‚ä½“ç§¯æµ‹é‡ç³»ç»Ÿ",MB_OK | MB_ICONERROR );
+		GetDlgItem(IDC_WORKSTATUS)->SetWindowText("å·¥ä½œçŠ¶æ€ï¼šæœªè¿æ¥");
 		((CButton*)GetDlgItem(IDC_BTN_GETINFO))->EnableWindow(FALSE);
 		((CButton*)GetDlgItem(IDC_BTN_SYSSET))->EnableWindow(FALSE);
 		((CButton*)GetDlgItem(IDC_BTN_MEASURE2))->EnableWindow(FALSE);
@@ -256,8 +255,8 @@ void CTractorClientDlg::OnBtnConnect()
 	if (!cnctstat)
 	{
 		cnctstat=TRUE;
-		GetDlgItem(IDC_WORKSTATUS)->SetWindowText("¹¤×÷×´Ì¬£ºÒÑÁ¬½Ó");
-		GetDlgItem(IDC_BTN_CONNECT)->SetWindowText("¶Ï¿ªÉè±¸");
+		GetDlgItem(IDC_WORKSTATUS)->SetWindowText("å·¥ä½œçŠ¶æ€ï¼šå·²è¿æ¥");
+		GetDlgItem(IDC_BTN_CONNECT)->SetWindowText("æ–­å¼€è®¾å¤‡");
 		((CButton*)GetDlgItem(IDC_BTN_GETINFO))->EnableWindow(TRUE);
 		((CButton*)GetDlgItem(IDC_BTN_SYSSET))->EnableWindow(TRUE);
 		((CButton*)GetDlgItem(IDC_BTN_MEASURE2))->EnableWindow(TRUE);
@@ -270,8 +269,8 @@ void CTractorClientDlg::OnBtnConnect()
 		closesocket(sockClient2);
 		WSACleanup( );
 		cnctstat=FALSE;
-		GetDlgItem(IDC_WORKSTATUS)->SetWindowText("¹¤×÷×´Ì¬£ºÎ´Á¬½Ó");
-		GetDlgItem(IDC_BTN_CONNECT)->SetWindowText("Á¬½ÓÉè±¸");
+		GetDlgItem(IDC_WORKSTATUS)->SetWindowText("å·¥ä½œçŠ¶æ€ï¼šæœªè¿æ¥");
+		GetDlgItem(IDC_BTN_CONNECT)->SetWindowText("è¿æ¥è®¾å¤‡");
 		((CButton*)GetDlgItem(IDC_BTN_GETINFO))->EnableWindow(FALSE);
 		((CButton*)GetDlgItem(IDC_BTN_SYSSET))->EnableWindow(FALSE);
 		((CButton*)GetDlgItem(IDC_BTN_MEASURE2))->EnableWindow(FALSE);
@@ -311,7 +310,7 @@ void CTractorClientDlg::OnBtnSysSet()
 
 }
 
-//¼ÆËãÌå»ı
+//è®¡ç®—ä½“ç§¯
 int CTractorClientDlg::CalVolume(int *distance,float *CrossArea)
 {
 	int i;
@@ -328,9 +327,9 @@ int CTractorClientDlg::CalVolume(int *distance,float *CrossArea)
 		
 			sita = (float)(i*pi/ 360);
 			d[i] = distance[i] * cosf(sita);
-			h[i] = distance[i]*sinf(sita);	// µ¥Î»mm
+			h[i] = distance[i]*sinf(sita);	// å•ä½mm
 			if(distance[i]<D+500)
-				CrossArea[i-1] = 0.5*(2 * D - d[i] - d[i - 1])*(fabsf(h[i] - h[i - 1]));//µ¥Î» mm^2
+				CrossArea[i-1] = 0.5*(2 * D - d[i] - d[i - 1])*(fabsf(h[i] - h[i - 1]));//å•ä½ mm^2
 			else CrossArea[i - 1] = 0;
 
 		if (CrossArea[i - 1] < 0)CrossArea[i-1] = 0;
@@ -339,13 +338,13 @@ int CTractorClientDlg::CalVolume(int *distance,float *CrossArea)
 	return 0;
 }
 
-BOOL IsFrmOne=false;//±ê¼Ç¶àÏß³Ì½øÈë
+BOOL IsFrmOne=false;//æ ‡è®°å¤šçº¿ç¨‹è¿›å…¥
 
 char CmdMeasure1[17] = { (char)0x02,(char)0x73,(char)0x52,(char)0x4E,\
 		(char)0x20,(char)0x4C,(char)0x4D,(char)0x44,(char)0x73,(char)0x63,\
 		(char)0x61,(char)0x6E,(char)0x64,(char)0x61,(char)0x74,(char)0x61,\
 		(char)0x03 };//Measure once 
-//²âÁ¿º¯Êı	
+//æµ‹é‡å‡½æ•°	
 void CTractorClientDlg::StartMeasuring(int vlume[])
 {
 	start = clock();
@@ -355,8 +354,8 @@ void CTractorClientDlg::StartMeasuring(int vlume[])
 	int Msglen;
 	Msglen = recv(sockClient2, recvBuf, 2000, 0);
 
-	recvBuf[0] = 0x24;//ÆğÊ¼·û»»Îª$
-	recvBuf[Msglen - 1] = 0x23;//ÖÕÖ¹·û»»Îª#
+	recvBuf[0] = 0x24;//èµ·å§‹ç¬¦æ¢ä¸º$
+	recvBuf[Msglen - 1] = 0x23;//ç»ˆæ­¢ç¬¦æ¢ä¸º#
 
 	CString strMsg;
 	strMsg.Format("%s", recvBuf);
@@ -370,9 +369,9 @@ void CTractorClientDlg::StartMeasuring(int vlume[])
 	strMsg = strMsg.Right(strMsg.GetLength() - k1 - 5);
 
 	k2 = strMsg.Find("#");
-	strMsg = strMsg.Left(k2);//ÌáÈ¡ÓĞĞ§ĞÅÏ¢
+	strMsg = strMsg.Left(k2);//æå–æœ‰æ•ˆä¿¡æ¯
 
-	int data[CollectNum ] = { 0 };/*ÕâÊÇ×îºóµÃµ½µÄ¾àÀëÊı¾İ µ¥Î»ÊÇmm */
+	int data[CollectNum ] = { 0 };/*è¿™æ˜¯æœ€åå¾—åˆ°çš„è·ç¦»æ•°æ® å•ä½æ˜¯mm */
 	int vol[10] = { 0 };
 	int Ssum[10] = { 0 };
 	float CrossArea[CollectNum - 1] = { 0 };
@@ -382,26 +381,26 @@ void CTractorClientDlg::StartMeasuring(int vlume[])
 	string s;
 	ss << strMsg;
 	int i = 0;
-	ss >> s;	//µÚÒ»¸öÊÇÊı¾İ¸öÊı ²»ĞèÒª
+	ss >> s;	//ç¬¬ä¸€ä¸ªæ˜¯æ•°æ®ä¸ªæ•° ä¸éœ€è¦
 	for(i=0;i<CollectNum;i++)
 	{
 		ss >> s;
 		data[i] = convert<int>(s);
 		if (data[i] > D || data[i]<100 ) data[i] = D;
 	}
-	CalVolume(data, CrossArea);		//¼ÆËãÃ¿¸öÎ¢¶Î½ØÃæ»ı
+	CalVolume(data, CrossArea);		//è®¡ç®—æ¯ä¸ªå¾®æ®µæˆªé¢ç§¯
 
-	for (int i = 0; i < 120 ; i++)		//È¡120¸öÊı¾İ  ¼´0-60¡ã
+	for (int i = 0; i < 120 ; i++)		//å–120ä¸ªæ•°æ®  å³0-60Â°
 	{
-		Ssum[i / 24] += 0.5*CrossArea[i];	//Ã¿²¿·Ö½ØÃæ»ıÖ®ºÍ mm^2
+		Ssum[i / 24] += 0.5*CrossArea[i];	//æ¯éƒ¨åˆ†æˆªé¢ç§¯ä¹‹å’Œ mm^2
 		if (Ssum[i / 24] < 0)Ssum[i/24] = 0;
 	}
 
 	for (int i = 0; i < 10; i++)
 	{
-		vol[i] = (float)(0.00232*Ssum[i]);//½«½ØÃæ»ıµÈĞ§³ÉÌå»ı µ¥Î»cm^3
+		vol[i] = (float)(0.00232*Ssum[i]);//å°†æˆªé¢ç§¯ç­‰æ•ˆæˆä½“ç§¯ å•ä½cm^3
 		//*0.155->cm^3/s -> /10^6  m^3/s =
-		//0.025L/s Ã¿¸öÅçÍ·³öË®Á¿/1.55*10^-7 *Percent   =     ĞèÒª0.12L/m^3
+		//0.025L/s æ¯ä¸ªå–·å¤´å‡ºæ°´é‡/1.55*10^-7 *Percent   =     éœ€è¦0.12L/m^3
 		//Percent=0.12/0.025*1.55*10^-7=7.44*10^-7*300=2.232*10^-4
 		if ( vol[i]<100)vol[i] = 0;
 		else if (vol[i] > 900)vol[i] = 900;
@@ -423,12 +422,12 @@ void CTractorClientDlg::StartMeasuring(int vlume[])
 		CString RunTime;
 		int rt;
 		rt = (finish - start);
-		RunTime.Format("ÔËĞĞÊ±¼ä£º%d ms", rt);
+		RunTime.Format("è¿è¡Œæ—¶é—´ï¼š%d ms", rt);
 		AfxGetMainWnd()->GetDlgItem(IDC_MEA_TYPE)->SetWindowText(RunTime);
 	}
 }
 
- //µ¥´Î²âÁ¿ 
+ //å•æ¬¡æµ‹é‡ 
 void CTractorClientDlg::OnBtnMeasure1() 
 {
 	DWORD dwBytesWrite = 40;
@@ -444,16 +443,16 @@ void CTractorClientDlg::OnBtnMeasure1()
 
 
 
-//¿ªÆôĞÂÏß³Ì
+//å¼€å¯æ–°çº¿ç¨‹
 void CTractorClientDlg::OnBtnMeasure2() 
 {
 
 	DWORD TCPThreadID;
 	IsMeasure2 = true;
-	hTCPTransThread= CreateThread( (LPSECURITY_ATTRIBUTES) NULL, //°²È«ÊôĞÔ
-		0,//³õÊ¼»¯Ïß³ÌÕ»µÄ´óĞ¡£¬È±Ê¡ÎªÓëÖ÷Ïß³Ì´óĞ¡ÏàÍ¬ 
-		(LPTHREAD_START_ROUTINE)TCPThread, //Ïß³ÌµÄÈ«¾Öº¯Êı 
-		AfxGetMainWnd()->m_hWnd, //´Ë´¦´«ÈëÁËÖ÷¿ò¼ÜµÄ¾ä±ú 
+	hTCPTransThread= CreateThread( (LPSECURITY_ATTRIBUTES) NULL, //å®‰å…¨å±æ€§
+		0,//åˆå§‹åŒ–çº¿ç¨‹æ ˆçš„å¤§å°ï¼Œç¼ºçœä¸ºä¸ä¸»çº¿ç¨‹å¤§å°ç›¸åŒ 
+		(LPTHREAD_START_ROUTINE)TCPThread, //çº¿ç¨‹çš„å…¨å±€å‡½æ•° 
+		AfxGetMainWnd()->m_hWnd, //æ­¤å¤„ä¼ å…¥äº†ä¸»æ¡†æ¶çš„å¥æŸ„ 
 		0, 
 		&TCPThreadID);		
 	ASSERT(hTCPTransThread!=NULL); 
@@ -461,14 +460,14 @@ void CTractorClientDlg::OnBtnMeasure2()
 	
 }
 
-//Í£Ö¹²âÁ¿
+//åœæ­¢æµ‹é‡
 void CTractorClientDlg::OnBtnStopMeasure() 
 {
 	char massage[] = "00000000000000000000000000000";
 	DWORD dwBytesWrite = strlen(massage);
 	WriteCOM(massage, dwBytesWrite);
 	Sleep(20);
-	COMClose();//¹Ø±Õ´®¿Ú
+	COMClose();//å…³é—­ä¸²å£
 	IsMeasure2=false;
 	char CmdMeasure1[19]={(char)0x02,(char)0x73,(char)0x45,(char)0x4E,(char)0x20,\
 		(char)0x4C,(char)0x4D,(char)0x44,(char)0x73,(char)0x63,(char)0x61,(char)0x6E,\
@@ -497,15 +496,15 @@ void CTractorClientDlg::OnBtnStopMeasure()
 	box->InsertString(box->GetCount(),strMsg);
 	strMsg.Empty();
 	box->SetCurSel(box->GetCount()-1);
-	AfxGetMainWnd()->GetDlgItem(IDC_MEA_TYPE)->SetWindowText("²âÁ¿ÀàĞÍ£ºÍ£Ö¹²âÁ¿");
+	AfxGetMainWnd()->GetDlgItem(IDC_MEA_TYPE)->SetWindowText("æµ‹é‡ç±»å‹ï¼šåœæ­¢æµ‹é‡");
 }
 
-//Á¬Ğø²âÁ¿
+//è¿ç»­æµ‹é‡
 char src2[4][40];
 void CTractorClientDlg::TCPThread(void *param)
 {
 	CTractorClientDlg *dlg=(CTractorClientDlg*)param;
-//	AfxGetMainWnd()->GetDlgItem(IDC_MEA_TYPE)->SetWindowText("²âÁ¿ÀàĞÍ£ºÁ¬Ğø²âÁ¿");	
+//	AfxGetMainWnd()->GetDlgItem(IDC_MEA_TYPE)->SetWindowText("æµ‹é‡ç±»å‹ï¼šè¿ç»­æµ‹é‡");	
 	DWORD dwBytesWrite = 40;
 	int vol[10] = { 0 };
 	unsigned int volSum[10] = { 0 };
@@ -522,11 +521,11 @@ void CTractorClientDlg::TCPThread(void *param)
 		}
 			
 		Sleep(10);
-		if (twice >= 10)//10´ÎÆ½¾ùÂË²¨
-		{//´óÔ¼160ms·¢ËÍÒ»´ÎÊı¾İ
+		if (twice >= 10)//10æ¬¡å¹³å‡æ»¤æ³¢
+		{//å¤§çº¦160mså‘é€ä¸€æ¬¡æ•°æ®
 			for (int i = 0; i<10; i++)
 				volSum[i] *= 0.1;
-			//×ª»»³É×Ö·û´®×¼±¸·¢ËÍ
+			//è½¬æ¢æˆå­—ç¬¦ä¸²å‡†å¤‡å‘é€
 			char src[40] = "";
 			Trans((int *)volSum, src);
 			for (int j = 3; j >0; j--)
@@ -553,7 +552,7 @@ CString CTractorClientDlg::FindSpc(int SpcIndex1, int SpcIndex2, CString str)
 		{
 			tmpindex=str.Find(" ");
 			SpcIndex.push_back(tmpindex);
-			str=str.Mid(tmpindex+1);//´Ótmpindex+1Ë÷ÒıÖµ´¦¿ªÊ¼È¡×Ö·û£¬Ö±µ½È¡Íê
+			str=str.Mid(tmpindex+1);//ä»tmpindex+1ç´¢å¼•å€¼å¤„å¼€å§‹å–å­—ç¬¦ï¼Œç›´åˆ°å–å®Œ
 		}
 		int index1=0,index2=0;
 		for (int j=0;j<SpcIndex1+1;j++)
@@ -567,7 +566,7 @@ CString CTractorClientDlg::FindSpc(int SpcIndex1, int SpcIndex2, CString str)
 		int a,b;
 		a=index1+SpcIndex1;
 		b=index2+SpcIndex2;
-		str=strtmp.Mid(a+1,b-a-1);//´ÓË÷ÒıÖµÎªa+1¿ªÊ¼È¡Êı¾İ£¬È¡µÃÊı¾İ¸öÊıÊÇb-a-1¸ö
+		str=strtmp.Mid(a+1,b-a-1);//ä»ç´¢å¼•å€¼ä¸ºa+1å¼€å§‹å–æ•°æ®ï¼Œå–å¾—æ•°æ®ä¸ªæ•°æ˜¯b-a-1ä¸ª
 
 	return str;
 }
@@ -576,9 +575,9 @@ void CTractorClientDlg::GetInfo()
 {
 	
 	
-	AfxGetMainWnd()->GetDlgItem(IDC_IPADDR)->SetWindowText("IPµØÖ·£º192.168.0.1");
-	AfxGetMainWnd()->GetDlgItem(IDC_PORT)->SetWindowText("¶Ë¿ÚºÅ£º2111");
-	AfxGetMainWnd()->GetDlgItem(IDC_DATASTREAM)->SetWindowText("Á¬½ÓÀàĞÍ£ºTCPÁ¬½Ó");
+	AfxGetMainWnd()->GetDlgItem(IDC_IPADDR)->SetWindowText("IPåœ°å€ï¼š192.168.0.1");
+	AfxGetMainWnd()->GetDlgItem(IDC_PORT)->SetWindowText("ç«¯å£å·ï¼š2111");
+	AfxGetMainWnd()->GetDlgItem(IDC_DATASTREAM)->SetWindowText("è¿æ¥ç±»å‹ï¼šTCPè¿æ¥");
 	
 	
 	char CmdFreqReso[16]={(char)0x02,(char)0x73,(char)0x52,(char)0x4E,(char)0x20, \
@@ -597,30 +596,30 @@ void CTractorClientDlg::GetInfo()
 	strFreq="0x"+FindSpc(1,2,strMsg);
 	int freq;
 	StrToIntEx(strFreq,STIF_SUPPORT_HEX,&freq);
-	tmpstr.Format("É¨ÃèÆµÂÊ£º%dHz",freq/100);
+	tmpstr.Format("æ‰«æé¢‘ç‡ï¼š%dHz",freq/100);
 	AfxGetMainWnd()->GetDlgItem(IDC_FREQ)->SetWindowText(tmpstr);
 	
 	strReso="0x"+FindSpc(3,4,strMsg);
 	int reso;
 	StrToIntEx(strReso,STIF_SUPPORT_HEX,&reso);
-	tmpstr.Format("½Ç·Ö±æÂÊ£º%0.2f¡ã",(float)reso/10000);
+	tmpstr.Format("è§’åˆ†è¾¨ç‡ï¼š%0.2fÂ°",(float)reso/10000);
 	AfxGetMainWnd()->GetDlgItem(IDC_RESO)->SetWindowText(tmpstr);
 	
 	strStarAng="0x"+FindSpc(4,5,strMsg);
 	int startang;
 	StrToIntEx(strStarAng,STIF_SUPPORT_HEX,&startang);
-	tmpstr.Format("ÆğÊ¼½Ç£º%0.2f¡ã",(float)startang/10000);
+	tmpstr.Format("èµ·å§‹è§’ï¼š%0.2fÂ°",(float)startang/10000);
 	AfxGetMainWnd()->GetDlgItem(IDC_STARTANG)->SetWindowText(tmpstr);
 	
 	strStopAng="0x"+FindSpc(5,6,strMsg);
 	int stopang;
 	StrToIntEx(strStopAng,STIF_SUPPORT_HEX,&stopang);
-	tmpstr.Format("ÖÕÖ¹½Ç£º%0.2f¡ã",(float)stopang/10000);
+	tmpstr.Format("ç»ˆæ­¢è§’ï¼š%0.2fÂ°",(float)stopang/10000);
 	AfxGetMainWnd()->GetDlgItem(IDC_STOPANG)->SetWindowText(tmpstr);
 
 	
 	
-	/*ÎÄ¼ş±£´æ*/
+	/*æ–‡ä»¶ä¿å­˜*/
 	CString flname;
 	flname="Data.txt";
 	FILE *pFile=fopen(flname,"a");
@@ -668,8 +667,8 @@ void CTractorClientDlg::SetInfo()
 	strMsg.Empty();
 	box->SetCurSel(box->GetCount()-1);
 
-	AfxGetMainWnd()->GetDlgItem(IDC_STARTANG)->SetWindowText("ÆğÊ¼½Ç£º0¡ã");
-	AfxGetMainWnd()->GetDlgItem(IDC_STOPANG)->SetWindowText("ÖÕÖ¹½Ç£º90¡ã");
+	AfxGetMainWnd()->GetDlgItem(IDC_STARTANG)->SetWindowText("èµ·å§‹è§’ï¼š0Â°");
+	AfxGetMainWnd()->GetDlgItem(IDC_STOPANG)->SetWindowText("ç»ˆæ­¢è§’ï¼š90Â°");
 
 }
 
@@ -718,7 +717,7 @@ void CTractorClientDlg::Logout()
 	box->SetCurSel(box->GetCount()-1);
 }
 
-//±£´æÉèÖÃ
+//ä¿å­˜è®¾ç½®
 void CTractorClientDlg::Saveup()
 {
 	char CmdSave[17]={(char)0x02,(char)0x73,(char)0x4D,(char)0x4E,(char)0x20,\
@@ -752,50 +751,50 @@ void CTractorClientDlg::Saveup()
 
 void CTractorClientDlg::OnStnClickedTitle()
 {
-	// TODO: ÔÚ´ËÌí¼Ó¿Ø¼şÍ¨Öª´¦Àí³ÌĞò´úÂë
+	// TODO: åœ¨æ­¤æ·»åŠ æ§ä»¶é€šçŸ¥å¤„ç†ç¨‹åºä»£ç 
 }
 
-//´®¿ÚµÄ´ò¿ªºÍÅäÖÃ
+//ä¸²å£çš„æ‰“å¼€å’Œé…ç½®
 BOOL CTractorClientDlg::COMinit()
 {
 	
-	hCom = CreateFile("COM3",//COM3¿Ú
-		GENERIC_READ | GENERIC_WRITE, //ÔÊĞí¶ÁºÍĞ´
-		0, //¶ÀÕ¼·½Ê½
+	hCom = CreateFile("COM3",//COM3å£
+		GENERIC_READ | GENERIC_WRITE, //å…è®¸è¯»å’Œå†™
+		0, //ç‹¬å æ–¹å¼
 		NULL,
-		OPEN_EXISTING, //´ò¿ª¶ø²»ÊÇ´´½¨
-		0, //Í¬²½·½Ê½
+		OPEN_EXISTING, //æ‰“å¼€è€Œä¸æ˜¯åˆ›å»º
+		0, //åŒæ­¥æ–¹å¼
 		NULL);
 	if (hCom == (HANDLE)-1)
 	{
-		AfxMessageBox("´ò¿ªCOMÊ§°Ü!");
+		AfxMessageBox("æ‰“å¼€COMå¤±è´¥!");
 		return FALSE;
 	}
-	SetupComm(hCom, 1024, 1024); //ÊäÈë»º³åÇøºÍÊä³ö»º³åÇøµÄ´óĞ¡¶¼ÊÇ1024
+	SetupComm(hCom, 1024, 1024); //è¾“å…¥ç¼“å†²åŒºå’Œè¾“å‡ºç¼“å†²åŒºçš„å¤§å°éƒ½æ˜¯1024
 
 	COMMTIMEOUTS TimeOuts;
-	//Éè¶¨¶Á³¬Ê±
+	//è®¾å®šè¯»è¶…æ—¶
 	TimeOuts.ReadIntervalTimeout = 1000;
 	TimeOuts.ReadTotalTimeoutMultiplier = 500;
 	TimeOuts.ReadTotalTimeoutConstant = 5000;
-	//Éè¶¨Ğ´³¬Ê±
+	//è®¾å®šå†™è¶…æ—¶
 	TimeOuts.WriteTotalTimeoutMultiplier = 500;
 	TimeOuts.WriteTotalTimeoutConstant = 2000;
-	SetCommTimeouts(hCom, &TimeOuts); //ÉèÖÃ³¬Ê±
+	SetCommTimeouts(hCom, &TimeOuts); //è®¾ç½®è¶…æ—¶
 
 	DCB dcb;
 	GetCommState(hCom, &dcb);
-	dcb.BaudRate = 9600; //²¨ÌØÂÊÎª9600
-	dcb.ByteSize = 8; //Ã¿¸ö×Ö½ÚÓĞ8Î»
-	dcb.Parity = NOPARITY; //ÎŞÆæÅ¼Ğ£ÑéÎ»
-	dcb.StopBits = TWOSTOPBITS; //Á½¸öÍ£Ö¹Î»
+	dcb.BaudRate = 9600; //æ³¢ç‰¹ç‡ä¸º9600
+	dcb.ByteSize = 8; //æ¯ä¸ªå­—èŠ‚æœ‰8ä½
+	dcb.Parity = NOPARITY; //æ— å¥‡å¶æ ¡éªŒä½
+	dcb.StopBits = TWOSTOPBITS; //ä¸¤ä¸ªåœæ­¢ä½
 	SetCommState(hCom, &dcb);
 
 	PurgeComm(hCom, PURGE_TXCLEAR | PURGE_RXCLEAR);
 	return TRUE;
 }
 
-//¹Ø±Õ´®¿Ú
+//å…³é—­ä¸²å£
 BOOL CTractorClientDlg::COMClose()
 {
 	return CloseHandle(hCom);
@@ -803,14 +802,14 @@ BOOL CTractorClientDlg::COMClose()
 
 BOOL CTractorClientDlg::ReadCOM(char *str)
 {
-	//Í¬²½¶Á´®¿Ú
+	//åŒæ­¥è¯»ä¸²å£
 	//char str[100];
-	DWORD wCount;//¶ÁÈ¡µÄ×Ö½ÚÊı
+	DWORD wCount;//è¯»å–çš„å­—èŠ‚æ•°
 	BOOL bReadStat;
 	bReadStat = ReadFile(hCom, str, 60, &wCount, NULL);
 	if (!bReadStat)
 	{
-		AfxMessageBox("¶Á´®¿ÚÊ§°Ü!");
+		AfxMessageBox("è¯»ä¸²å£å¤±è´¥!");
 		return FALSE;
 	}
 	else
@@ -822,7 +821,7 @@ BOOL CTractorClientDlg::ReadCOM(char *str)
 BOOL CTractorClientDlg::WriteCOM(char *str,DWORD dwBytesWrite)
 {
 	//char lpOutBuffer[100];
-	//·¢ËÍ×Ö½ÚÊı
+	//å‘é€å­—èŠ‚æ•°
 	COMSTAT ComStat;
 	DWORD dwErrorFlags;
 	BOOL bWriteStat;
@@ -830,7 +829,7 @@ BOOL CTractorClientDlg::WriteCOM(char *str,DWORD dwBytesWrite)
 	bWriteStat = WriteFile(hCom, str, dwBytesWrite, &dwBytesWrite, NULL);
 	if (!bWriteStat)
 	{
-		AfxMessageBox("Ğ´´®¿ÚÊ§°Ü!");
+		AfxMessageBox("å†™ä¸²å£å¤±è´¥!");
 
 	}
 	PurgeComm(hCom, PURGE_TXABORT |
